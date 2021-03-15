@@ -1,61 +1,52 @@
 import pandas as pd
 import os
 import logging
- 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-x = open("files.txt", "r")
-files = {}
-frames = {}
+from my_functions import*
+import json
 
-for line in x:
-        pos = line.find(':')
-        file_name = line[:pos]
-        sheet_name = line[pos:].rstrip("\n").replace(":","").replace(" ","")
-        files[file_name] = sheet_name
-
-print('1. Loading Files...\n')
-master_file =  pd.read_csv(dir_path + r"\bb.txt",
-                        delimiter = "\t",
-                        header =0,
-                        na_values='?',
-                        engine='python',
-                        parse_dates=['NPL_Date','RISK_RATG_DT'],
-                        dtype={'Party_Id':object,'SPL_MENTION_ACCT_IND':object})
-print('Master file loaded.')
-print()
+path = os.path.dirname(os.path.realpath(__file__))
+with open('my_files.json') as json_file: 
+    files = json.load(json_file)
     
-
-class mis_v_redw():
-
-    def load_files(self):
-        for file_name,sheet in files.items():
-            excel_file = dir_path + "\MIS\\"+file_name
-            df=pd.read_excel(excel_file,sheet_name=sheet,dtype={'Account_No':str,'M_Cus_No':object})
-            frames[file_name] = df
-            shape = frames[file_name].shape
-            print(f"File {file_name} is loaded \nDimension :{shape} \n" )
-        
-        print("==== All Secondary files are loaded. ")
+master =  pd.read_csv(path + r"\bb.txt",
+                           delimiter = "\t",
+                           header =0,
+                           na_values='?',
+                           engine='python',
+                           parse_dates=['NPL_Date','RISK_RATG_DT'],
+                           dtype={'Party_Id':object,'SPL_MENTION_ACCT_IND':object})
+print('Master file loaded completed.')
+# print(files['comparison'][0]['filename']) accessing file
+  
+class my_comparison:
+    def __init__(self,filename,sheet,extension):
+        self.filename = filename
+        self.sheet = sheet
+        self.extension = extension
+        self.file_path = path+"\\MIS\\"+filename+extension
+        self.dataframe = pd.read_excel(self.file_path,sheet_name=sheet,dtype={'Account_No':str,'M_Cus_No':object})
+    
+      
+for i in files['comparison']:
+    x = (i['filename']).replace(" ","")
+    x = my_comparison((i['filename']),(i['sheet']),(i['extension']))
+    print("1. File "+ (i['filename'])+" is loaded")
+    print("    Dimension :",x.dataframe.shape)
+    print("2. Checking Master file against", (i['filename']))
+    try:
+        df=master.merge(x.dataframe,how='left',left_on='Account_Num',right_on='Account_No')
         print()
+    except Exception as e:
+            print(f"    File x.dataframe is not compatible \n   !! {e} is not found \n")
+            print('___________________________')
+            continue
+    check1=df[df['Account_No'].notnull()][['Account_Num','Balance','M_Bnm_Balance_SUM1']]
+    if check1[check1['Balance']!=check1['M_Bnm_Balance_SUM1']].shape[0]==0:
+        print("    ODTL numbers are all matched.\n")
+        print('___________________________')
 
-        
-    def odtl_check(self):
-        for file,frame in frames.items():
-            print(f"Checking Master file against {file}")
-            try:
-                df=master_file.merge(frame,how='left',left_on='Account_Num',right_on='Account_No')
-            except Exception as e:
-                print(f"File {file_name} is not compatible \n !! {e} is not found \n")
-                continue
-                
-            check1=df[df['Account_No'].notnull()][['Account_Num','Balance','M_Bnm_Balance_SUM1']]
-            if check1[check1['Balance']!=check1['M_Bnm_Balance_SUM1']].shape[0]==0:
-                print("    ODTL numbers are all matched.\n")
-
-            else:
-                df_unmatched=check1[check1['Balance']!=check1['M_Bnm_Balance_SUM1']]
-                df_unmatched.to_excel(dir_path+"Unmatched Balance ODTL.xlsx",engine='openpyxl')
-                print('Not matched; Check Unmatched Balance ODTL excel file')
-
-        print("====END====")
+    else:
+        print("Not matched; Check Unmatched Balance ODTL excel file")
+        print('___________________________')
+    # Data1 = my_comparison("xx","xxx","xxs")
 

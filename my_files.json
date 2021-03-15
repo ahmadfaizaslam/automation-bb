@@ -1,0 +1,42 @@
+{
+    "comparison":[
+        {
+        "filename": "ODTL FY 1112 SMF Product table",
+        "sheet": "OD",
+        "extension": ".xlsx"
+        },
+        {
+        "filename": "STRC FY 1112 product table 1",
+        "sheet": "STRC_BB_monthly_4",
+        "extension": ".xlsx"
+        },
+        {
+        "filename": "OD Cr Bal 1011 product table",
+        "sheet": "Recovered_Sheet1",
+        "extension": ".xlsx"
+            }
+],
+    "preparation":[
+        {
+            "filename": "GIL by BC Dec20",
+            "sheet": "GILDec20",
+            "extension": ".xlsx"
+            },
+        {
+            "filename": "LB Dec20",
+            "sheet": "Funded",
+            "extension": ".xlsx"
+            },
+        {
+            "filename": "LB Dec20",
+            "sheet": "Unfunded",
+            "extension": ".xlsx"
+            },
+        {
+            "filename": "NOB Code Value Chain (Jan 2017)1",
+            "sheet": "Latest aftr Renew. Energy Align",
+            "extension": ".xlsx"
+            }
+    ]
+
+}

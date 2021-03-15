@@ -1,6 +1,6 @@
-from aaoop import*
+from aaoop import my_comparison
 
 
 
-mis_v_redw.load_files(files)
-mis_v_redw.odtl_check(frames)
+if __name__ == '__main__':
+    my_comparison()

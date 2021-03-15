@@ -1,12 +1,12 @@
 #%%
+from my_files import*
 import pandas as pd
 import numpy as np
 import os
 import math
-
-dir_path = os.path.dirname(os.path.realpath(__file__))
-print(dir_path)
-
+#%%
+print(file.dir_path)
+#%%
 print('1. Loading Files...\n')
 master =  pd.read_csv(dir_path + r"\bb.txt",
                            delimiter = "\t",
@@ -23,6 +23,8 @@ GIL_BCraw = pd.read_excel(dir_path+r"\Code and reference\GIL by BC Dec20.xlsx",s
 LB_Funded = pd.read_excel(dir_path+r"\Code and reference\LB Dec20.xlsx",sheet_name='Funded',skiprows=2,dtype={'M_Cus_No':str})
 NOB_Code = pd.read_excel(dir_path+r"\Code and reference\\NOB Code Value Chain (Jan 2017).xlsx",sheet_name='Latest aftr Renew. Energy Align',skiprows = 2)
 LB_NFunded = pd.read_excel(dir_path+r"\Code and reference\LB Dec20.xlsx",sheet_name='Unfunded',dtype={'M_Cus_No':str})
+# %%
+
 # %%
 # GIL_BCraw.head()
 # %%
