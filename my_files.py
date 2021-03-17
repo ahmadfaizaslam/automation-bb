@@ -18,12 +18,28 @@ class file():
         'OD Cr Bal 1011 product table'     :   'Recovered_Sheet1'
     }
 
-
     preparation = {
-        'GIL by BC Dec20'                  : 'GILDec20',
-        'LB Dec20'                         : 'Funded',
-        'LB Dec20'                         : 'Unfunded',
-        'NOB Code Value Chain (Jan 2017)'  : 'Latest aftr Renew. Energy Align'
-}
+        'GIL' :{
+            'filename' : 'GIL by BC Dec20',
+            'sheet'    : 'GILDec20',
+            'skiprows' : '3'
+        },
+        'LB' :{
+            'filename' : 'LB Dec20',
+            'sheet'    : 'Funded',
+            'skiprows' : '2'
+        },
+        'LB' :{
+            'filename' : 'LB Dec20',
+            'sheet'    : 'Unfunded',
+            'skiprows' : '0'
+        },
+        'NOB' :{
+            'filename' : 'NOB Code Value Chain (Jan 2017)',
+            'sheet'    : 'Latest aftr Renew. Energy Align',
+            'skiprows' : '2'
+        },
+    }
+
 
 
