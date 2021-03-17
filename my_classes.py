@@ -21,3 +21,7 @@ class my_comparison:
             print("        ODTL numbers are all matched.")
         else:
             print("        Not matched; Check Unmatched Balance ODTL excel file")
+    
+    def ccnt(self,column_1,column_2,column_3):
+        master_BC = pd.concat([self.dataframe[column_1],self.dataframe[column_2],self.dataframe[column_3]],ignore_index=True)
+        return master_BC
