@@ -9,9 +9,7 @@ class file():
                            delimiter = "\t",
                            header =0,
                            na_values='?',
-                           engine='python',
-                           parse_dates=['NPL_Date','RISK_RATG_DT'],
-                           dtype={'Party_Id':object,'SPL_MENTION_ACCT_IND':object})
+                           engine='python',)
     
     
     validation = {

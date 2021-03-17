@@ -35,7 +35,6 @@ for i in files['comparison']:
     print("2. Checking Master file against", (i['filename']))
     try:
         df=master.merge(x.dataframe,how='left',left_on='Account_Num',right_on='Account_No')
-        print()
     except Exception as e:
             print(f"    File x.dataframe is not compatible \n   !! {e} is not found \n")
             print('___________________________')

@@ -1,11 +1,22 @@
 import pandas as pd
 from my_files import*
-
-
-
-def load_files(file_name,sheet):
-    excel_file = file.dir_path +"\MIS\\"+file_name+".xlsx"
-    df=pd.read_excel(excel_file,sheet_name=sheet,dtype={'Account_No':str,'M_Cus_No':object})
-    print(f"1. File {file_name} is loaded")
-    print("    Dimension :",df.shape)
-    return df
+import os
+path = os.path.dirname(os.path.realpath(__file__))
+class my_comparison:
+    def __init__(self,filename,sheet):
+        self.filename = filename
+        self.sheet = sheet
+        self.file_path = path+"\\MIS\\"+filename+".xlsx"
+        self.dataframe = pd.read_excel(self.file_path,sheet_name=sheet,dtype={'Account_No':str,'M_Cus_No':object})
+    
+        
+    def comparison(self,master,column_1,column_2):
+        df=master.merge(self.dataframe,how='inner',left_on=column_1,right_on=column_2)
+        return df
+    
+    def odtl_check(self,column_1,column_2):
+        if self[self[column_1]!=self[column_2]].shape[0]==0:
+            print("    ODTL numbers are all matched.\n___________________________")
+        else:
+            print("Not matched; Check Unmatched Balance ODTL excel file")
+            print('___________________________')
