@@ -8,7 +8,11 @@ class my_automation:
         self.filename = filename
         self.sheet = sheet
         self.file_path = path+"\\MIS\\"+filename+".xlsx"
-        self.dataframe = pd.read_excel(self.file_path,sheet_name=sheet,dtype={'Account_No':str,"Account No":str,'M_Account_No':str,'M_Cus_No':object}).rename(columns={"Account No": 'Account_No', 'M_Account_No': 'Account_No', "M Bnm Balance SUM":'M_Bnm_Balance_SUM1','M_Bnm_Balance':'M_Bnm_Balance_SUM1'})
+        self.dataframe = pd.read_excel(self.file_path,sheet_name=sheet,
+                            dtype={'M_Cus_No':str,"Account No":str,'M_Account_No':str,'M_Cus_No':str}).rename(columns={
+                            "M_Account_No " : "Account_No",
+                            "M Bnm Balance SUM": "M_Bnm_Balance_SUM1",
+                            "M_Bnm_Balance": "M_Bnm_Balance_SUM1"})
         self.shape = self.dataframe.shape
         
     def comparison(self,master,column_1,column_2):
