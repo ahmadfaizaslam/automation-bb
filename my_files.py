@@ -12,10 +12,12 @@ class file():
                            engine='python',)
     
     
-    validation = {
-        'ODTL FY 1112 SMF Product table'   :   'OD',
-        'STRC FY 1112 product table 1'     :   'STRC_BB_monthly_4',
-        'OD Cr Bal 1011 product table'     :   'Recovered_Sheet1'
+    validation = { #dictionaries must not have duplicate filename
+        'ODTL FY 1112 SMF Product table'          :   ['TL','OD'], #storing multiple keys in a list 
+        'STRC FY 1112 product table 1'            :   ['STRC_BB_monthly_4'],
+        'OD Cr Bal 1011 product table'            :   ['Recovered_Sheet1'],
+        'TRADE FY1112 product table (Non Funded)' :   ['Trade_BB_monthly'],
+        'TRADE FY1112 product table Funded'       :   ['Trade_BB_monthly']
     }
 
     preparation = {
