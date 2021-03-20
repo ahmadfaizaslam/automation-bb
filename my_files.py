@@ -9,16 +9,35 @@ class file():
                            delimiter = "\t",
                            header =0,
                            na_values='?',
-                           engine='python',)
+                           engine='python',
+                           dtype={'Account_Num':str})
     
     
     validation = { #dictionaries must not have duplicate filename
-        'ODTL FY 1112 SMF Product table'          :   ['TL','OD'], #storing multiple keys in a list 
-        'STRC FY 1112 product table 1'            :   ['STRC_BB_monthly_4'],
-        'OD Cr Bal 1011 product table'            :   ['Recovered_Sheet1'],
-        'TRADE FY1112 product table (Non Funded)' :   ['Trade_BB_monthly'],
-        'TRADE FY1112 product table Funded'       :   ['Trade_BB_monthly']
+        'ODTL FY 1112 SMF Product table'          :   ['OD','TL'], #storing multiple keys in a list 
+        # 'STRC FY 1112 product table 1'            :   ['STRC_BB_monthly_4'],
+        # 'OD Cr Bal 1011 product table'            :   ['Recovered_Sheet1']
+        'TRADE FY1112 product table (Non Funded)' :   ['Trade_BB_monthly']
+        # 'TRADE FY1112 product table Funded'       :   ['Trade_BB_monthly']
     }
+    
+    validation2 = {
+        'OD' :{
+            'filename' : 'ODTL FY 1112 SMF Product table',
+            'sheet'    : 'OD',
+            'merge_on' : 'Account_No',
+            'check_on' : 'M_Bnm_Balance_SUM1' 
+        },
+        'TL' :{
+            'filename' : 'ODTL FY 1112 SMF Product table',
+            'sheet'    : 'TL',
+            'merge_on' : 'M_Account_No',
+            'check_on' : 'M_Bnm_Balance' 
+        }
+    }
+    
+    
+    
 
     preparation = {
         'GIL' :{

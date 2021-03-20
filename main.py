@@ -17,7 +17,7 @@ if __name__ == "__main__":
                 classname = my_automation(filename,sheet)
                 print(f"{x} . {filename},{sheet} is loaded")
                 try:    
-                    merged = my_automation.comparison(classname,master,'Account_Num','Account_No')
+                    merged = my_automation.comparison(classname,master,'Account_Num','M_Cus_No')
                     my_automation.odtl_check(merged,'Balance','M_Bnm_Balance_SUM1')
                 except Exception as e:
                         print(f"        File {filename} is not compatible \n        !! {e} is not found")
