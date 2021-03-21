@@ -9,17 +9,18 @@ if __name__ == "__main__":
     for x,j in file.preparation.items():
         classname = x
         files = file.preparation[classname]
-        # my_transformation.tagging(files['filename'],files['sheet'],files['merge_on'],files['check_on'],files['skiprows'])
-        # classname = my_automation.tagging(files['filename'],files['sheet'],files['merge_on'],files['check_on'],files['skiprows'])
         classname = my_transformation(
                     files['filename'],
                     files['sheet'],
                     files['merge_on'],
                     files['check_on'],
                     files['skiprow'])
+        print(f"{bullet} . {files['filename']},{files['sheet']} is loaded")
+        print(classname.shape)
+        bullet = bullet + 1
+        
         if x == 'gil':
-            print("boiiii")
-        elif x == 'lb_f':
-            print("BIg boiii")
-
+            gil = my_transformation.tagging(classname)
+        elif x == 'lb_f' or x == 'lb_uf':
+            print("no")
     

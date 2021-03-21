@@ -54,6 +54,7 @@ class my_transformation:
                         skiprows=skiprow,
                         dtype={merge_on:str,check_on:int})
         self.shape = self.dataframe.shape
-
-    def taggging(self):
-        print(self.filename)
+    
+    def tagging(self):
+        y =99
+        return y

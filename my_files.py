@@ -64,12 +64,12 @@ class file():
             'skiprow' : '2',
             'merge_on' : '',
             'check_on' : 'M_Cus_No'
+        },
+        'lb_uf' :{
+            'filename' : 'LB Dec20',
+            'sheet'    : 'Unfunded',
+            'skiprow' : '0'
         }
-        # 'lb_uf' :{
-        #     'filename' : 'LB Dec20',
-        #     'sheet'    : 'Unfunded',
-        #     'skiprow' : '0'
-        # },
         # 'nob' :{
         #     'filename' : 'NOB Code Value Chain (Jan 2017)',
         #     'sheet'    : 'Latest aftr Renew. Energy Align',
