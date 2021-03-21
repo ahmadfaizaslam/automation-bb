@@ -10,29 +10,46 @@ class file():
                            header =0,
                            na_values='?',
                            engine='python',
-                           dtype={'Account_Num':str})
+                           dtype={'Account_Num':str,"Balance":int})
     
     
-    validation = { #dictionaries must not have duplicate filename
-        'ODTL FY 1112 SMF Product table'          :   ['OD','TL'], #storing multiple keys in a list 
-        # 'STRC FY 1112 product table 1'            :   ['STRC_BB_monthly_4'],
-        # 'OD Cr Bal 1011 product table'            :   ['Recovered_Sheet1']
-        'TRADE FY1112 product table (Non Funded)' :   ['Trade_BB_monthly']
-        # 'TRADE FY1112 product table Funded'       :   ['Trade_BB_monthly']
-    }
-    
-    validation2 = {
-        'OD' :{
+  
+    validation = {
+        'ODTL1' :{
             'filename' : 'ODTL FY 1112 SMF Product table',
             'sheet'    : 'OD',
             'merge_on' : 'Account_No',
             'check_on' : 'M_Bnm_Balance_SUM1' 
         },
-        'TL' :{
+        'ODTL2' :{
             'filename' : 'ODTL FY 1112 SMF Product table',
             'sheet'    : 'TL',
             'merge_on' : 'M_Account_No',
             'check_on' : 'M_Bnm_Balance' 
+        },
+        'STRC_BC' :{
+            'filename' : 'STRC FY 1112 product table 1',
+            'sheet'    : 'STRC_BB_monthly_4',
+            'merge_on' : 'M_Cus_No',
+            'check_on' : 'M_Bnm_Balance_SUM' 
+        },
+        'OD' :{
+            'filename' : 'OD Cr Bal 1011 product table',
+            'sheet'    : 'Recovered_Sheet1',
+            'merge_on' : 'Account_No',
+            'check_on' : 'M_Bnm_Balance_SUM1' 
+        },
+        'Trade_F' :{
+            'filename' : 'TRADE FY1112 product table Funded',
+            'sheet'    : 'Trade_BB_monthly',
+            'merge_on' : 'M_Cus_No',
+            'check_on' : 'M_Bnm_Balance_SUM' 
+        },
+        'Trade_NF' :{
+            'filename' : 'TRADE FY1112 product table (Non Funded)',
+            'sheet'    : 'Trade_BB_monthly',
+            'merge_on' : 'Account No',
+            'check_on' : 'M Bnm Balance SUM' 
         }
     }
     
@@ -61,6 +78,4 @@ class file():
             'skiprows' : '2'
         },
     }
-
-
 
