@@ -2,8 +2,7 @@ import os
 import pandas as pd
 
 class file():
-    #path = "Z:\BB RISK\BB DATA\\2020\8. Aug 2020\MIS"
-    dir_path = os.path.dirname(os.path.realpath(__file__))
+    dir_path = os.path.dirname(os.path.realpath(__file__)) #"Z:\BB RISK\BB DATA\\2020\8. Aug 2020
     
     master =  pd.read_csv(dir_path + r"\bb.txt",
                            delimiter = "\t",
@@ -12,40 +11,38 @@ class file():
                            engine='python',
                            dtype={'Account_Num':str,"Balance":int})
     
-    
-  
-    validation = {
-        'ODTL1' :{
+    validation = {  #dictionaries should not have duplicate keys.... if needed, do a list in dictionaries
+        'odtl1' :{
             'filename' : 'ODTL FY 1112 SMF Product table',
             'sheet'    : 'OD',
             'merge_on' : 'Account_No',
             'check_on' : 'M_Bnm_Balance_SUM1' 
         },
-        'ODTL2' :{
+        'odtl2' :{
             'filename' : 'ODTL FY 1112 SMF Product table',
             'sheet'    : 'TL',
             'merge_on' : 'M_Account_No',
             'check_on' : 'M_Bnm_Balance' 
         },
-        'STRC_BC' :{
+        'strc_bc' :{
             'filename' : 'STRC FY 1112 product table 1',
             'sheet'    : 'STRC_BB_monthly_4',
             'merge_on' : 'M_Cus_No',
             'check_on' : 'M_Bnm_Balance_SUM' 
         },
-        'OD' :{
+        'od' :{
             'filename' : 'OD Cr Bal 1011 product table',
             'sheet'    : 'Recovered_Sheet1',
             'merge_on' : 'Account_No',
             'check_on' : 'M_Bnm_Balance_SUM1' 
         },
-        'Trade_F' :{
+        'trade_f' :{
             'filename' : 'TRADE FY1112 product table Funded',
             'sheet'    : 'Trade_BB_monthly',
             'merge_on' : 'M_Cus_No',
             'check_on' : 'M_Bnm_Balance_SUM' 
         },
-        'Trade_NF' :{
+        'trade_nf' :{
             'filename' : 'TRADE FY1112 product table (Non Funded)',
             'sheet'    : 'Trade_BB_monthly',
             'merge_on' : 'Account No',
@@ -53,29 +50,36 @@ class file():
         }
     }
     
-    
-    
-
     preparation = {
-        'GIL' :{
+        'gil' :{
             'filename' : 'GIL by BC Dec20',
             'sheet'    : 'GILDec20',
-            'skiprows' : '3'
+            'merge_on' : 'GCIF #',
+            'check_on' : 'Stage 3 Reason',
+            'skiprow' : '3'
         },
-        'LB' :{
+        'lb_f' :{
             'filename' : 'LB Dec20',
             'sheet'    : 'Funded',
-            'skiprows' : '2'
-        },
-        'LB' :{
-            'filename' : 'LB Dec20',
-            'sheet'    : 'Unfunded',
-            'skiprows' : '0'
-        },
-        'NOB' :{
-            'filename' : 'NOB Code Value Chain (Jan 2017)',
-            'sheet'    : 'Latest aftr Renew. Energy Align',
-            'skiprows' : '2'
-        },
+            'skiprow' : '2',
+            'merge_on' : '',
+            'check_on' : 'M_Cus_No'
+        }
+        # 'lb_uf' :{
+        #     'filename' : 'LB Dec20',
+        #     'sheet'    : 'Unfunded',
+        #     'skiprow' : '0'
+        # },
+        # 'nob' :{
+        #     'filename' : 'NOB Code Value Chain (Jan 2017)',
+        #     'sheet'    : 'Latest aftr Renew. Energy Align',
+        #     'skiprow' : '2'
+        # },
     }
 
+    taggings = {
+        "NPL Flag Y"            : "NPL",
+        "Impairment Status Y"   : "IPL",
+        "Rescheduled"           : "IPL R&R",
+        "Restructured"          : "Restructured"
+    }
