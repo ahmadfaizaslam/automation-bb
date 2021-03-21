@@ -68,7 +68,9 @@ class file():
         'lb_uf' :{
             'filename' : 'LB Dec20',
             'sheet'    : 'Unfunded',
-            'skiprow' : '0'
+            'skiprow' : '0',
+            'merge_on' : '',
+            'check_on' : 'M_Cus_No'
         }
         # 'nob' :{
         #     'filename' : 'NOB Code Value Chain (Jan 2017)',

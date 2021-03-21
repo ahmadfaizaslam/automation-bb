@@ -55,6 +55,6 @@ class my_transformation:
                         dtype={merge_on:str,check_on:int})
         self.shape = self.dataframe.shape
     
-    def tagging(self):
-        y =99
-        return y
+    def tag(self):
+        for conditions,value in file.taggings.items():
+            print(conditions,value)

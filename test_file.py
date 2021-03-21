@@ -20,7 +20,7 @@ if __name__ == "__main__":
         bullet = bullet + 1
         
         if x == 'gil':
-            gil = my_transformation.tagging(classname)
+            gil = my_transformation.tag(classname)
         elif x == 'lb_f' or x == 'lb_uf':
             print("no")
     
