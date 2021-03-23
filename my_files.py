@@ -57,31 +57,34 @@ class file():
             'merge_on' : 'GCIF #',
             'check_on' : 'Stage 3 Reason',
             'skiprow' : '3'
-        },
+         },
         'lb_f' :{
             'filename' : 'LB Dec20',
             'sheet'    : 'Funded',
-            'skiprow' : '2',
-            'merge_on' : '',
-            'check_on' : 'M_Cus_No'
-        },
-        'lb_uf' :{
-            'filename' : 'LB Dec20',
-            'sheet'    : 'Unfunded',
-            'skiprow' : '0',
+            'skiprow'  : '2',
             'merge_on' : '',
             'check_on' : 'M_Cus_No'
         }
+        # 'lb_uf' :{
+        #     'filename' : 'LB Dec20',
+        #     'sheet'    : 'Unfunded',
+        #     'skiprow' : '0',
+        #     'merge_on' : '',
+        #     'check_on' : 'M_Cus_No'
+        # },
         # 'nob' :{
         #     'filename' : 'NOB Code Value Chain (Jan 2017)',
         #     'sheet'    : 'Latest aftr Renew. Energy Align',
-        #     'skiprow' : '2'
-        # },
+        #     'skiprow' : '2',
+        #     'merge_on' : '',
+        #     'check_on' : ''
+        # }
     }
 
     taggings = {
         "NPL Flag Y"            : "NPL",
         "Impairment Status Y"   : "IPL",
         "Rescheduled"           : "IPL R&R",
-        "Restructured"          : "Restructured"
+        "Restructured"          : "IPL R&R",
+        "Bankruptcy Flag "      :  "PL"
     }

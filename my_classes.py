@@ -1,6 +1,7 @@
 import pandas as pd
 from my_files import*
 import os
+import numpy as np
 path = os.path.dirname(os.path.realpath(__file__))
 
 class my_validation:
@@ -47,14 +48,31 @@ class my_transformation:
         self.sheet = sheet,
         self.merge_on = merge_on
         self.check_on = check_on
-        self.file_path = path+"\\\Code and reference\\"+filename+".xlsx"                 #for mis
+        self.file_path = path+"\\\Code and reference\\"+filename+".xlsx"       #for mis
         self.dataframe= pd.read_excel(
                         self.file_path,
                         sheet_name=sheet,
                         skiprows=skiprow,
-                        dtype={merge_on:str,check_on:int})
+                        header=3,
+                        dtype={merge_on:str,check_on:str})
         self.shape = self.dataframe.shape
     
-    def tag(self):
-        for conditions,value in file.taggings.items():
-            print(conditions,value)
+    def tag(self,old_column,new_column):
+        df=self.dataframe
+        df[new_column]=""
+        for condition,value in file.taggings.items():
+            df[new_column].mask(df[old_column]==condition, value,inplace=True)
+        df.to_excel(path+r"\\testter.xlsx",engine='openpyxl')
+        # print(df.info())
+        return df
+    
+    def calculation(self):
+        df=self.dataframe
+        df_small= df["M_Cus_No","NOB"]
+        print(type(df_small))
+    
+    
+    
+    def merge_with_master (self):
+        pass
+        

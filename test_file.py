@@ -20,7 +20,12 @@ if __name__ == "__main__":
         bullet = bullet + 1
         
         if x == 'gil':
-            gil = my_transformation.tag(classname)
+            gil = my_transformation.tag(classname,'Stage 3 Reason','PL IPL IPL R&R NPL')
         elif x == 'lb_f' or x == 'lb_uf':
-            print("no")
-    
+            lb_f = my_transformation.calculation(classname)
+            
+            
+            
+            
+            
+            
