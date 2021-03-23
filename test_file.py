@@ -26,6 +26,5 @@ if __name__ == "__main__":
                 lb_f = my_transformation.calculation(classname,'Broad Code','M_Cus_No','NOB')
             else:
                 lb_uf = my_transformation.calculation(classname,'Broad Code','M_Cus_No','Nature_of_Business')
-
-            
-print(lb_uf)
+        elif x == 'nob':
+            pass

@@ -5,6 +5,8 @@ import numpy as np
 path = os.path.dirname(os.path.realpath(__file__))
 
 class my_validation:
+   
+    
     def __init__(self, filename,sheet,merge_on,check_on):
         self.filename = filename,
         self.sheet = sheet,
@@ -27,21 +29,11 @@ class my_validation:
     def odtl_check(self,column_1,column_2):
         if self[self[column_1]!=self[column_2]].shape[0]==0:
             print("        ODTL numbers are all matched.")
+            return self
         else:
             print("        Not matched; Check Unmatched Balance ODTL excel file")
             
-    def tagging(self,sheet,merge_on,check_on,skiprow):
-        file_path = path+"\\Code and reference\\"+self+".xlsx"   #for code and reference
-        dataframe = pd.read_excel(file_path,
-                                       sheet_name=sheet,
-                                       skiprows=skiprow,
-                                       dtype={merge_on:str,check_on:str})
-        print(dataframe.shape)
-    def ccnt(self,column_1,column_2,column_3):
-        concatenation = self.dataframe[[column_1,column_2,column_3]].copy()
-        return concatenation
-
-
+    
 class my_transformation:
     def __init__(self, filename,sheet,merge_on,check_on,skiprow):
         self.filename = filename,
@@ -61,7 +53,7 @@ class my_transformation:
         df[new_column]=""
         for condition,value in file.taggings.items():
             df[new_column].mask(df[old_column]==condition, value,inplace=True)
-        print(df[new_column].value_counts())
+        #print(df[new_column].value_counts())
         # df.to_excel(path+r"\\test.xlsx",engine='openpyxl')
         # print(df.info())
         return df
