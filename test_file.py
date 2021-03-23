@@ -22,10 +22,10 @@ if __name__ == "__main__":
         if x == 'gil':
             gil = my_transformation.tag(classname,'Stage 3 Reason','PL IPL IPL R&R NPL')
         elif x == 'lb_f' or x == 'lb_uf':
-            lb_f = my_transformation.calculation(classname)
+            if x =='lb_f':
+                lb_f = my_transformation.calculation(classname,'Broad Code','M_Cus_No','NOB')
+            else:
+                lb_uf = my_transformation.calculation(classname,'Broad Code','M_Cus_No','Nature_of_Business')
+
             
-            
-            
-            
-            
-            
+print(lb_uf)

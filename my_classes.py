@@ -53,7 +53,6 @@ class my_transformation:
                         self.file_path,
                         sheet_name=sheet,
                         skiprows=skiprow,
-                        header=3,
                         dtype={merge_on:str,check_on:str})
         self.shape = self.dataframe.shape
     
@@ -62,17 +61,17 @@ class my_transformation:
         df[new_column]=""
         for condition,value in file.taggings.items():
             df[new_column].mask(df[old_column]==condition, value,inplace=True)
-        df.to_excel(path+r"\\testter.xlsx",engine='openpyxl')
+        print(df[new_column].value_counts())
+        # df.to_excel(path+r"\\test.xlsx",engine='openpyxl')
         # print(df.info())
         return df
     
-    def calculation(self):
-        df=self.dataframe
-        df_small= df["M_Cus_No","NOB"]
-        print(type(df_small))
-    
-    
-    
+    def calculation(self,new_column,column_1,column_2):
+        df = self.dataframe
+        df[new_column]=(np.floor(pd.to_numeric(df[column_2])/1000))*1000
+        df = df[[column_1,column_2,new_column]]
+        return df
+        
     def merge_with_master (self):
         pass
         
