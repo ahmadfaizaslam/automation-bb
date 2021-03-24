@@ -62,8 +62,10 @@ class my_transformation:
         df = self.dataframe
         df[new_column]=(np.floor(pd.to_numeric(df[column_2])/1000))*1000
         df = df[[column_1,column_2,new_column]]
-        return df
+        return  df
         
-    def merge_with_master (self):
-        pass
-        
+    def my_slicer(self,column_1,column_2,column_3):
+       df = self.dataframe
+       df=df[[column_1,column_2,column_3]]
+       return df
+   

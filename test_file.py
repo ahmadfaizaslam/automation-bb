@@ -25,6 +25,8 @@ if __name__ == "__main__":
             if x =='lb_f':
                 lb_f = my_transformation.calculation(classname,'Broad Code','M_Cus_No','NOB')
             else:
-                lb_uf = my_transformation.calculation(classname,'Broad Code','M_Cus_No','Nature_of_Business')
+                lb_uf = my_transformation.calculation(classname,'Broad Code','M_Cus_No','Nature_of_Business') #renames Nature of business to NOB
         elif x == 'nob':
-            pass
+            nob = my_transformation.my_slicer(classname,'NOB','Sub Sector Desc','NOB Desc')
+
+
