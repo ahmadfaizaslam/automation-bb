@@ -3,6 +3,7 @@ from my_classes import*
 import itertools
 path = os.path.dirname(os.path.realpath(__file__))
 master =  file.master
+codes = file.codes
 bullet = 1
 
 if __name__ == "__main__":
@@ -15,7 +16,7 @@ if __name__ == "__main__":
                     files['merge_on'],
                     files['check_on'],
                     files['skiprow'])
-        print(f"{bullet} . {files['filename']},{files['sheet']} is loaded")
+        print(f"{bullet} . {files['filename']}, {files['sheet']} is loaded")
         print(classname.shape)
         bullet = bullet + 1
         
@@ -27,6 +28,10 @@ if __name__ == "__main__":
             else:
                 lb_uf = my_transformation.calculation(classname,'Broad Code','M_Cus_No','Nature_of_Business') #renames Nature of business to NOB
         elif x == 'nob':
-            nob = my_transformation.my_slicer(classname,'NOB','Sub Sector Desc','NOB Desc')
-
-
+            nob = my_transformation.get_nob(classname,'NOB Code','Sub Sector Desc','NOB Desc')
+        
+    lb_f = (my_transformation.do_merge(lb_f,nob,'Broad Code','NOB Code'))
+    lb_uf = (my_transformation.do_merge(lb_uf,nob,'Broad Code','NOB Code'))
+    lb_fnf = pd.concat([lb_f,lb_uf],sort=True) 
+    
+print(lb_fnf.info())   
