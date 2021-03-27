@@ -9,7 +9,12 @@ class file():
                            header =0,
                            na_values='?',
                            engine='python',
-                           dtype={'Account_Num':str,"Balance":int})
+                           dtype={
+                               'Account_Num':str,
+                               "Balance":int,
+                               'Party_Id':str,
+                               'GCIF':str})\
+                            .rename(columns={"Party_Id": "GCIF"})
     
     codes = pd.read_excel(dir_path+r"\Code and reference\MASTER - Codes.xls",
                           sheet_name='Cust Class & BRR & Risk Cat',
@@ -43,12 +48,12 @@ class file():
             'merge_on' : 'Account_No',
             'check_on' : 'M_Bnm_Balance_SUM1' 
         },
-        'trade_f' :{
-            'filename' : 'TRADE FY1112 product table Funded',
-            'sheet'    : 'Trade_BB_monthly',
-            'merge_on' : 'M_Cus_No',
-            'check_on' : 'M_Bnm_Balance_SUM' 
-        },
+        # 'trade_f' :{
+        #     'filename' : 'TRADE FY1112 product table Funded',
+        #     'sheet'    : 'Trade_BB_monthly',
+        #     'merge_on' : 'M_Cus_No',
+        #     'check_on' : 'M_Bnm_Balance_SUM' 
+        # },
         'trade_nf' :{
             'filename' : 'TRADE FY1112 product table (Non Funded)',
             'sheet'    : 'Trade_BB_monthly',

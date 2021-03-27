@@ -33,6 +33,8 @@ class my_validation:
         else:
             print("        Not matched; Check Unmatched Balance ODTL excel file")
             
+    def summary(self,column_1,column_2,column_3):
+        pass
     
 class my_transformation:
     def __init__(self, filename,sheet,merge_on,check_on,skiprow):
@@ -49,28 +51,39 @@ class my_transformation:
                         dtype={merge_on:str,check_on:str})
         self.shape = self.dataframe.shape
     
-    def tag(self,old_column,new_column):
-        df=self.dataframe
+    def tag(self,old_column,new_column,my_dictionary):
+        df=self
         df[new_column]=""
-        for condition,value in file.taggings.items():
+        for condition,value in my_dictionary.items():
             df[new_column].mask(df[old_column]==condition, value,inplace=True)
-        #print(df[new_column].value_counts())
+
         # df.to_excel(path+r"\\test.xlsx",engine='openpyxl')
         # print(df.info())
         return df
     
+    def create_column(self,new_column_name,column_value):
+        df = self.dataframe
+        df[new_column_name] = column_value
+        return df
+
     def calculation(self,new_column,column_1,column_2):
         df = self.dataframe
         df[new_column]=(np.floor(pd.to_numeric(df[column_2])/1000))*1000
         df = df[[column_1,column_2,new_column]].rename(columns={column_2: 'NOB'})
         return  df
-        
+    
+    def get_gil(self,*columns):
+        columns = list(columns)
+        df = self
+        df = df[columns]
+        return df
+
     def get_nob(self,column_1,column_2,column_3):
         df = self
         df = self.dataframe
         df=df[[column_1,column_2,column_3]].rename(columns={column_2:'Sub Sector',column_3: 'Broad Sector'})
         return df
 
-    def do_merge(df_a,df_b,left,right):
-        df_a = df_a.merge(df_b,how='inner',left_on=left,right_on=right).drop(columns=[right])
+    def do_merge(df_a,df_b,how,left,right):
+        df_a = df_a.merge(df_b,how=how,left_on=left,right_on=right).drop(columns=[right])
         return df_a

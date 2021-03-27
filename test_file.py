@@ -21,7 +21,9 @@ if __name__ == "__main__":
         bullet = bullet + 1
         
         if x == 'gil':
-            gil = my_transformation.tag(classname,'Stage 3 Reason','PL IPL IPL R&R NPL')
+            gil = my_transformation.create_column(classname,'PL+GIL','PL')
+            gil = my_transformation.tag(gil,'Stage 3 Reason','PL IPL IPL R&R NPL',file.taggings)
+            gil = my_transformation.get_gil(gil,'GCIF #','PL IPL IPL R&R NPL','PL+GIL')
         elif x == 'lb_f' or x == 'lb_uf':
             if x =='lb_f':
                 lb_f = my_transformation.calculation(classname,'Broad Code','M_Cus_No','NOB')
@@ -29,9 +31,10 @@ if __name__ == "__main__":
                 lb_uf = my_transformation.calculation(classname,'Broad Code','M_Cus_No','Nature_of_Business') #renames Nature of business to NOB
         elif x == 'nob':
             nob = my_transformation.get_nob(classname,'NOB Code','Sub Sector Desc','NOB Desc')
-        
-    lb_f = (my_transformation.do_merge(lb_f,nob,'Broad Code','NOB Code'))
-    lb_uf = (my_transformation.do_merge(lb_uf,nob,'Broad Code','NOB Code'))
-    lb_fnf = pd.concat([lb_f,lb_uf],sort=True) 
+            
+    masterbb = my_transformation.do_merge(master,gil,'left','GCIF','GCIF #') 
+    lb_f = my_transformation.do_merge(lb_f,nob,'left','Broad Code','NOB Code')
+    lb_uf = my_transformation.do_merge(lb_uf,nob,'left','Broad Code','NOB Code')
+    lb_fnf = pd.concat([lb_f,lb_uf],sort=True).drop_duplicates(subset='M_Cus_No')
     
-print(lb_fnf.info())   
+print(lb_fnf.info())
