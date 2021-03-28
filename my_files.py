@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-
+import numpy as np
 class file():
     dir_path = os.path.dirname(os.path.realpath(__file__)) #"Z:\BB RISK\BB DATA\\2020\8. Aug 2020
     
@@ -11,16 +11,25 @@ class file():
                            engine='python',
                            dtype={
                                'Account_Num':str,
-                               "Balance":int,
+                               'Balance':int,
                                'Party_Id':str,
-                               'GCIF':str})\
-                            .rename(columns={"Party_Id": "GCIF"})
+                               'GCIF':str,
+                               'RISK_ADJ_BRR': object})\
+                            .rename(columns={'Party_Id': 'GCIF',
+                                             'RISK_ADJ_BRR': 'BRR'
+                                             })
+    master['BRR'] =  master['BRR'].replace(np.nan,'Unrated')
     
-    codes = pd.read_excel(dir_path+r"\Code and reference\MASTER - Codes.xls",
+    code_ref = pd.read_excel(dir_path+r"\\Code and reference\\MASTER - Codes.xls",
                           sheet_name='Cust Class & BRR & Risk Cat',
                           nrows=26,
                           usecols=[3,4],
-                          skiprows=1).astype(str).drop_duplicates
+                          skiprows=1,
+                          dtype={
+                               'BRR':object,
+                            })\
+                            .drop_duplicates()\
+                            .rename(columns={'Risk Cat CRD':'Risk Cat'})
 
     """dictionaries should not have duplicate keys.... if needed, do a list in dictionaries"""
     validation = {  

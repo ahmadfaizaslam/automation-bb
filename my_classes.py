@@ -33,8 +33,7 @@ class my_validation:
         else:
             print("        Not matched; Check Unmatched Balance ODTL excel file")
             
-    def summary(self,column_1,column_2,column_3):
-        pass
+    
     
 class my_transformation:
     def __init__(self, filename,sheet,merge_on,check_on,skiprow):
@@ -85,5 +84,5 @@ class my_transformation:
         return df
 
     def do_merge(df_a,df_b,how,left,right):
-        df_a = df_a.merge(df_b,how=how,left_on=left,right_on=right).drop(columns=[right])
+        df_a = df_a.merge(df_b,how=how,left_on=left,right_on=right)
         return df_a
