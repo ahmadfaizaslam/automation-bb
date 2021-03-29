@@ -20,6 +20,10 @@ class my_validation:
                         check_on: 'M_Bnm_Balance' 
                         }).fillna(0)
         self.shape = self.dataframe.shape
+    
+    def series(self):
+        df = self.dataframe
+        return df
         
     def comparison(self,master,column_1,column_2):
         print(f"        Dimension : {self.shape}")
@@ -65,6 +69,10 @@ class my_transformation:
         df[new_column_name] = column_value
         return df
 
+    def colummn_create(df,new_column_name,column_value):
+        df[new_column_name] = column_value
+        return df
+
     def calculation(self,new_column,column_1,column_2):
         df = self.dataframe
         df[new_column]=(np.floor(pd.to_numeric(df[column_2])/1000))*1000
@@ -83,6 +91,18 @@ class my_transformation:
         df=df[[column_1,column_2,column_3]].rename(columns={column_2:'Sub Sector',column_3: 'Broad Sector'})
         return df
 
-    def do_merge(df_a,df_b,how,left,right):
-        df_a = df_a.merge(df_b,how=how,left_on=left,right_on=right)
+    def do_merge(df_a,df_b,left_column,right_colunm):
+        df_a = df_a.merge(df_b,how='left',left_on=left_column,right_on=right_colunm)
         return df_a
+    
+    def copy_value(df,value_from,value_to):
+        df[value_to].mask(df[value_to].isnull(), value_from, inplace=True)
+        return df
+        
+    def conditional_copy(df,value_from,value_to,cond,effect):
+        df.loc[df[value_from] == cond, value_to] = effect
+        return df
+    
+    def sconditional_copy(df,value_from,value_to,effect):
+        df.loc[value_from, value_to] = effect
+        return df
