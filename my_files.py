@@ -43,17 +43,17 @@ class file():
             'merge_on' : 'M_Account_No',
             'check_on' : 'M_Bnm_Balance' 
         },
-        'strc_bc' :{
-            'filename' : 'STRC FY 1112 product table 1',
-            'sheet'    : 'STRC_BB_monthly_4',
-            'merge_on' : 'M_Cus_No',
-            'check_on' : 'M_Bnm_Balance_SUM' 
-        },
         'od' :{
             'filename' : 'OD Cr Bal 1011 product table',
             'sheet'    : 'Recovered_Sheet1',
             'merge_on' : 'Account_No',
             'check_on' : 'M_Bnm_Balance_SUM1' 
+        },
+        'strc_bc' :{
+            'filename' : 'STRC FY 1112 product table 1',
+            'sheet'    : 'STRC_BB_monthly_4',
+            'merge_on' : 'M_Cus_No',
+            'check_on' : 'M_Bnm_Balance_SUM' 
         },
         'trade_f' :{
             'filename' : 'TRADE FY1112 product table Funded',

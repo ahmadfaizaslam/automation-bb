@@ -19,7 +19,7 @@ if __name__ == "__main__":
             dfs = my_validation.series(classname)    
             dfs = dfs[['Account_No','BC_NAME','REGION']]
             merged = my_validation.comparison(classname,master,"Account_Num","Account_No")
-            print("After mergin with bb.txt",merged.shape)
+            # print("After mergin with bb.txt",merged.shape)
             my_validation.odtl_check(merged,'Balance','M_Bnm_Balance')
             
             if x == 'strc_bc' or x == 'trade_f' or x == 'trade_nf':
@@ -121,20 +121,46 @@ if __name__ == "__main__":
     masterbb3 = my_transformation.sconditional_copy(masterbb3,idx,'BC Max','x')
     masterbb3['BC Max'] = masterbb3['BC Max'].replace(np.nan,'y').astype(object)
     
-    # masterbb3 = my_transformation.conditional_copy(masterbb3,'BC Max','BC_Borr','x',masterbb3['BC_NAME'])
-    # masterbbprep = masterbb3.drop_duplicates(subset='GCIF')
-    # masterbbprep = my_transformation.conditional_copy(masterbbprep,'BC Max','BC_Borr',0,masterbbprep['BC_NAME'])
-                # masterbbprep.loc[masterbbprep['BC Max'] == 0, 'BC_Borr'] = masterbbprep['BC_NAME']
-    # masterbbprep = masterbbprep.drop(columns=['BC_NAME','BC Max'])
-    # masterbbprep = masterbbprep[['GCIF', 'BC_Borr']]
+    masterbb3 = my_transformation.conditional_copy(masterbb3,'BC Max','BC_Borr','x',masterbb3['BC_NAME'])
+    masterbbprep = masterbb3.drop_duplicates(subset='GCIF')
+    masterbbprep = my_transformation.conditional_copy(masterbbprep,'BC Max','BC_Borr','y',masterbbprep['BC_NAME'])
+    masterbbprep = masterbbprep.drop(columns=['BC_NAME','BC Max'])
+    masterbbprep = masterbbprep[['GCIF', 'BC_Borr']]
     
-    # print(masterbb3.head(50))
-    print(masterbb3.info())
-    print(masterbb3['BC Max'].value_counts())
-    print(masterbb3['BC_NAME'].value_counts())
+    masterbb4=masterbb3.groupby(['GCIF'],as_index=False)['Balance'].sum()
+    
+    masterbb5 = masterbb3[[
+                'GCIF',
+                'REPORT_DATE',
+                'Customer_Class',
+                'Cust_Type',
+                'Org_Name',
+                'MBB_Sub_Market_Segment_Desc',
+                'MISC_Cd',
+                'MISC_Desc',
+                'NOB Sector',
+                'BRR',
+                'SPRTER_ADJ_RATG',
+                'RISK_RATG_DT',
+                'PL+GIL',
+                'Broad Code',
+                'Broad Sector',
+                'NOB Code',
+                # 'NOB Desc',
+                'Sub Sector',
+                'BC_NAME',
+                'Region',
+                'Risk CAT',
+                'Risk Cat CRD',
+                'Funded Non Funded',
+                'FRR']]
+    masterbb5 = masterbb5.drop_duplicates(subset='GCIF')
+    masterbb_borr=masterbb4.merge(masterbb5,how='left',left_on='GCIF', right_on='GCIF')
+    
 
-
-
-
-
-
+    masterbb_borr = my_transformation.conditional_copy(masterbb_borr,'Funded Non Funded','Funded Balance','Funded',masterbb_borr['Balance']).fillna(0)
+    masterbb_borr = my_transformation.conditional_copy(masterbb_borr,'Funded Non Funded','Non Funded Balance','Non Funded',masterbb_borr['Balance']).fillna(0)
+    # print(masterbb_borr.info())
+    print(masterbb.info())
+    # print(masterbb3['Risk CAT'].value_counts())
+    print(masterbb['PL+GIL'].value_counts())
