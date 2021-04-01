@@ -136,7 +136,3 @@ class my_transformation:
     def conditional_copy(df, value_from, value_to, cond, effect):
         df.loc[df[value_from] == cond, value_to] = effect
         return df
-
-    def sconditional_copy(df, value_from, value_to, effect):
-        df.loc[value_from, value_to] = effect
-        return df
