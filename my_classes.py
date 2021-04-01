@@ -63,7 +63,7 @@ class my_transformation:
             self.file_path,
             sheet_name=sheet,
             skiprows=skiprow,
-            dtype={merge_on: str, check_on: str, "BC_NAME": object},
+            dtype={merge_on: str, check_on: str},
         )
         self.shape = self.dataframe.shape
 
@@ -103,6 +103,13 @@ class my_transformation:
         df = pd.concat([df, special], sort=False)
         return df
 
+    def get_nob(self, column_1, column_2, column_3):
+        df = self
+        df = self.dataframe
+        df[column_1] = df[column_1].astype(str).str.strip()
+        df = df[[column_1, column_2, column_3]]
+        return df
+
     def get_nob_sec(df, column_1):
         df = df.drop(df[pd.to_numeric(df[column_1]) == 9999].index).drop(
             df[np.floor(pd.to_numeric(df[column_1]) % 1000) == 0].index
@@ -113,13 +120,6 @@ class my_transformation:
         columns = list(columns)
         df = self
         df = df[columns]
-        return df
-
-    def get_nob(self, column_1, column_2, column_3):
-        df = self
-        df = self.dataframe
-        df[column_1] = df[column_1].astype(str).str.strip()
-        df = df[[column_1, column_2, column_3]]
         return df
 
     def do_merge(df_a, df_b, left_column, right_colunm):

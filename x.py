@@ -27,10 +27,10 @@ if __name__ == "__main__":
             else:
                 master_BC_Acc.append(dfs)
 
-            merged = my_validation.comparison(
-                classname, master, "Account_Num", "Account_No"
-            )
-            my_validation.odtl_check(merged, "Balance", "M_Bnm_Balance")
+            # merged = my_validation.comparison(
+            #     classname, master, "Account_Num", "Account_No"
+            # )
+            # my_validation.odtl_check(merged, "Balance", "M_Bnm_Balance")
 
         except Exception as e:
             print(
@@ -49,11 +49,11 @@ if __name__ == "__main__":
     )
 
     master_BC_Acc = pd.concat(master_BC_Acc, sort=False)
-    master_BC_Acc[["BC_NAME"]] = (
-        master_BC_Acc[["BC_NAME"]]
-        .replace({"JOHOR BARU BC": "JOHOR BAHRU BC"})
-        .replace({"SUBANG": "SUBANG BC"})
-    )
+    # master_BC_Acc[["BC_NAME"]] = (
+    #     master_BC_Acc[["BC_NAME"]]
+    #     .replace({"JOHOR BARU BC": "JOHOR BAHRU BC"})
+    #     .replace({"SUBANG": "SUBANG BC"})
+    # )
 
     print(
         "================================================================================================"
@@ -121,4 +121,56 @@ if __name__ == "__main__":
         lb_fm, broad_sectors, "Broad Code", "NOB Code"
     ).drop(columns=["NOB Code"])
 
-print(lb_fm.head())
+    lb_ufm = (
+        my_transformation.do_merge(lb_uf, nob_desc, "NOB", "NOB Code")
+        .dropna(how="all")
+        .drop(columns=["NOB Code"])
+    )
+    lb_ufm = my_transformation.do_merge(
+        lb_ufm, broad_sectors, "Broad Code", "NOB Code"
+    ).drop(columns=["NOB Code"])
+
+    lb_fnf = pd.concat([lb_fm, lb_ufm], sort=True).drop_duplicates(subset="M_Cus_No")
+
+    masterbb1 = my_transformation.do_merge(masterbb, lb_fnf, "GCIF", "M_Cus_No")
+
+    masterbb2 = my_transformation.do_merge(
+        masterbb1, master_BC_GCIF, "GCIF", "Account_No"
+    )
+    masterbb2 = my_transformation.do_merge(
+        masterbb2, master_BC_Acc, "Account_Num", "Account_No"
+    )
+    masterbb2 = my_transformation.copy_value(masterbb2, "BC_NAME_x", "BC_NAME_y")
+    masterbb2 = (
+        my_transformation.copy_value(masterbb2, "REGION_x", "REGION_y")
+        .drop(
+            columns=[
+                "M_Cus_No",
+                "Account_No_x",
+                "Account_No_y",
+                "BC_NAME_x",
+                "REGION_x",
+            ]
+        )
+        .rename(
+            columns={
+                "BC_NAME_y": "BC_NAME",
+                "REGION_y": "Region",
+                "NOB_y": "NOB Code",
+                "NOB_x": "NOB Sector",
+            }
+        )
+    )
+
+    masterbb3 = my_transformation.do_merge(masterbb2, code_ref, "BRR", "BRR")
+    for new in [("Risk Cat CRD"), ("Risk Cat GCMC")]:
+        masterbb3 = my_transformation.colummn_create(
+            masterbb3, new, masterbb3["Risk CAT"]
+        )
+
+
+print(masterbb3["Risk CAT"].value_counts())
+print(masterbb3["Risk Cat CRD"].value_counts())
+print(masterbb3["Risk Cat GCMC"].value_counts())
+masterbb3.to_excel(path + "masterbbfaiz.xlsx", engine="openpyxl", index=False)
+# masterbb2.to_excel(path + r"\masterbbfaiz.xlsx", engine="openpyxl", index=False)

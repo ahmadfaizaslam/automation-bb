@@ -60,17 +60,17 @@ class file:
             "merge_on": "M_Cus_No",
             "check_on": "M_Bnm_Balance_SUM",
         },
-        "trade_f": {
-            "filename": "TRADE FY1112 product table Funded",
-            "sheet": "Trade_BB_monthly",
-            "merge_on": "M_Cus_No",
-            "check_on": "M_Bnm_Balance_SUM",
-        },
         "trade_nf": {
             "filename": "TRADE FY1112 product table (Non Funded)",
             "sheet": "Trade_BB_monthly",
             "merge_on": "M_Cus_No",
             "check_on": "M Bnm Balance SUM",
+        },
+        "trade_f": {
+            "filename": "TRADE FY1112 product table Funded",
+            "sheet": "Trade_BB_monthly",
+            "merge_on": "M_Cus_No",
+            "check_on": "M_Bnm_Balance_SUM",
         },
     }
 
