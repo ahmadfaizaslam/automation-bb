@@ -1,5 +1,6 @@
 from my_files import *
 from my_classes import *
+import datetime as dt
 
 bullet = 1
 
@@ -161,7 +162,6 @@ if __name__ == "__main__":
             }
         )
     )
-
     masterbb3 = my_transformation.do_merge(masterbb2, code_ref, "BRR", "BRR")
     masterbb3 = my_transformation.conditional_copy(
         masterbb3, "PL+GIL", "Risk Cat CRD", "GIL", "GIL"
@@ -172,10 +172,108 @@ if __name__ == "__main__":
             masterbb3, new, masterbb3["Risk CAT"]
         )
 
-    # print(masterbb3["Risk CAT"].value_counts())
-    print(masterbb3["Risk Cat CRD"].value_counts())
-    print(masterbb3["Risk Cat GCMC"].value_counts())
+    masterbb3 = my_transformation.conditional_copy(
+        masterbb3, "PL IPL IPL R&R NPL", "Risk Cat GCMC", "IPL", "IPL"
+    )
+    masterbb3 = my_transformation.conditional_copy(
+        masterbb3, "PL IPL IPL R&R NPL", "Risk Cat GCMC", "IPL R&R", "IPL R&R"
+    )
+    masterbb3 = my_transformation.conditional_copy(
+        masterbb3, "PL IPL IPL R&R NPL", "Risk Cat GCMC", "NPL", "NPL"
+    )
+
+    masterbb3["days"] = (
+        pd.to_datetime(masterbb3["REPORT_DATE"])
+        - pd.to_datetime(masterbb3["RISK_RATG_DT"])
+    ).dt.days
+    masterbb3.loc[masterbb3["days"] > 335, "Ageing"] = "Stale"
+    masterbb3.loc[masterbb3["days"] <= 335, "Ageing"] = "Current"
+    masterbb3["Ageing"] = masterbb3["Ageing"].fillna("Stale")
+    masterbb3 = masterbb3.drop(columns={"days"})
+
+    masterbb3 = my_transformation.tag(
+        masterbb3, "Facility_Level_2", "Funded Non Funded", file.funded_nfunded
+    )
+    masterbb3 = my_transformation.tag(
+        masterbb3, "NPL_Indicator", "PL NPL", file.pl_npl
+    ).replace("", "PL")
+    masterbb3["FRR"] = masterbb3["FAC_RISK_RATG"].fillna("Unrated")
+    masterbb3.loc[:, "RM Mil"] = masterbb3["Balance"] / 1000000
+    # masterbb3.to_excel(
+    #     path + r"\Masterbb_AccountLevel.xlsx", engine="openpyxl", index=False
+    # )
+    idx = masterbb3.groupby(["GCIF"])["Balance"].transform(max) == masterbb3["Balance"]
+    masterbb3.loc[idx, "BC Max"] = 1
+    masterbb3["BC Max"] = masterbb3["BC Max"].fillna(0)
+
+#     # masterbb3.loc[masterbb3["BC Max"] == "x", "BC_Borr"] = masterbb3["BC_NAME"]
+#     masterbb3 = my_transformation.conditional_copy(
+#         masterbb3, "BC Max", "BC_Borr", 1, masterbb3["BC_NAME"]
+#     )
+#     masterbbprep = masterbb3.drop_duplicates(subset="GCIF")
+#     # masterbbprep.loc[masterbbprep["BC Max"] == "y", "BC_Borr"] = masterbbprep["BC_NAME"]
+#     masterbb3 = my_transformation.conditional_copy(
+#         masterbb3, "BC Max", "BC_Borr", 0, masterbbprep["BC_NAME"]
+#     )
+#     masterbbprep.drop(columns=["BC_NAME", "BC Max"])
+#     masterbbprep = masterbbprep[["GCIF", "BC_Borr"]]
+#     """
 
 
-# masterbb3.to_excel(path + "masterbbfaiz.xlsx", engine="openpyxl", index=False)
-# masterbb2.to_excel(path + r"\masterbbfaiz.xlsx", engine="openpyxl", index=False)
+#     """
+#     masterbb4 = masterbb3.groupby(["GCIF"], as_index=False)["Balance"].sum()
+#     masterbb5 = masterbb3[
+#         [
+#             "GCIF",
+#             "REPORT_DATE",
+#             "Customer_Class",
+#             "Cust_Type",
+#             "Org_Name",
+#             "MBB_Sub_Market_Segment_Desc",
+#             "MISC_Cd",
+#             "MISC_Desc",
+#             "NOB Sector",
+#             "BRR",
+#             "SPRTER_ADJ_RATG",
+#             "RISK_RATG_DT",
+#             "PL+GIL",
+#             "Broad Code",
+#             "Broad Sector",
+#             "NOB Code",
+#             "NOB Desc",
+#             "Sub Sector Desc",
+#             "BC_NAME",
+#             "Region",
+#             "Risk CAT",
+#             "Risk Cat CRD",
+#             "Funded Non Funded",
+#             "FRR",
+#         ]
+#     ]
+
+#     masterbb5 = masterbb5.drop_duplicates(subset="GCIF")
+#     masterborr = my_transformation.do_merge(masterbb4, masterbb5, "GCIF", "GCIF")
+
+#     masterborr = my_transformation.conditional_copy(
+#         masterborr,
+#         "Funded Non Funded",
+#         "Funded Balance",
+#         "Funded",
+#         masterborr["Balance"],
+#     ).fillna(0)
+
+#     masterborr = my_transformation.conditional_copy(
+#         masterborr,
+#         "Funded Non Funded",
+#         "Non Funded Balance",
+#         "Non Funded",
+#         masterborr["Balance"],
+#     ).fillna(0)
+
+#     final_frame = my_transformation.do_merge(masterborr, masterbbprep, "GCIF", "GCIF")
+
+
+# # masterbb3.to_excel(path + r"\masterbbfaiz.xlsx", engine="openpyxl", index=False)
+# # masterbb2.to_excel(path + r"\masterbbfaiz.xlsx", engine="openpyxl", index=False)
+
+print(masterbb3.info())

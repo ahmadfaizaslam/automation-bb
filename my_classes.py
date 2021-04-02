@@ -127,10 +127,7 @@ class my_transformation:
         return df_a
 
     def copy_value(df, value_from, value_to):
-        # df[value_to].mask(df[value_to].isnull(), df[value_from], inplace=True)
         df[value_to].fillna(df[value_from], inplace=True)
-        # df.loc[df[value_to].isna(), value_to] = df[value_from]
-        #   masterbb2.loc[masterbb2['BC_NAME_y'].isnull(), 'BC_NAME_y'] = masterbb2['BC_NAME_x']
         return df
 
     def conditional_copy(df, value_from, value_to, cond, effect):
