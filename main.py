@@ -199,81 +199,83 @@ if __name__ == "__main__":
     ).replace("", "PL")
     masterbb3["FRR"] = masterbb3["FAC_RISK_RATG"].fillna("Unrated")
     masterbb3.loc[:, "RM Mil"] = masterbb3["Balance"] / 1000000
-    # masterbb3.to_excel(
-    #     path + r"\Masterbb_AccountLevel.xlsx", engine="openpyxl", index=False
-    # )
-    idx = masterbb3.groupby(["GCIF"])["Balance"].transform(max) == masterbb3["Balance"]
+    masterbb3.to_excel(
+        path + r"\masterbb_account_level.xlsx", engine="openpyxl", index=False
+    )
+    masterbb3["Balance"] = masterbb3["Balance"].astype(float)
+    idx = (
+        masterbb3.groupby(["GCIF"])["Balance"].transform(max).astype(float)
+        == masterbb3["Balance"]
+    )
     masterbb3.loc[idx, "BC Max"] = 1
     masterbb3["BC Max"] = masterbb3["BC Max"].fillna(0)
+    # masterbb3.loc[masterbb3["BC Max"] == 1, "BC_Borr"] = masterbb3["BC_NAME"]
+    masterbb3 = my_transformation.conditional_copy(
+        masterbb3, "BC Max", "BC_Borr", 1, masterbb3["BC_NAME"]
+    )
+    masterbbprep = masterbb3.drop_duplicates(subset="GCIF")
+    #     # masterbbprep.loc[masterbbprep["BC Max"] == "y", "BC_Borr"] = masterbbprep["BC_NAME"]
+    masterbbprep = my_transformation.conditional_copy(
+        masterbbprep, "BC Max", "BC_Borr", 0, masterbbprep["BC_NAME"]
+    )
+    masterbbprep.drop(columns=["BC_NAME", "BC Max"])
+    masterbbprep = masterbbprep[["GCIF", "BC_Borr"]]
+    #     """
 
-#     # masterbb3.loc[masterbb3["BC Max"] == "x", "BC_Borr"] = masterbb3["BC_NAME"]
-#     masterbb3 = my_transformation.conditional_copy(
-#         masterbb3, "BC Max", "BC_Borr", 1, masterbb3["BC_NAME"]
-#     )
-#     masterbbprep = masterbb3.drop_duplicates(subset="GCIF")
-#     # masterbbprep.loc[masterbbprep["BC Max"] == "y", "BC_Borr"] = masterbbprep["BC_NAME"]
-#     masterbb3 = my_transformation.conditional_copy(
-#         masterbb3, "BC Max", "BC_Borr", 0, masterbbprep["BC_NAME"]
-#     )
-#     masterbbprep.drop(columns=["BC_NAME", "BC Max"])
-#     masterbbprep = masterbbprep[["GCIF", "BC_Borr"]]
-#     """
+    #     """
+    masterbb4 = masterbb3.groupby(["GCIF"], as_index=False)["Balance"].sum()
+    masterbb5 = masterbb3[
+        [
+            "GCIF",
+            "REPORT_DATE",
+            "Customer_Class",
+            "Cust_Type",
+            "Org_Name",
+            "MBB_Sub_Market_Segment_Desc",
+            "MISC_Cd",
+            "MISC_Desc",
+            "NOB Sector",
+            "BRR",
+            "SPRTER_ADJ_RATG",
+            "RISK_RATG_DT",
+            "PL+GIL",
+            "Broad Code",
+            "Broad Sector",
+            "NOB Code",
+            "NOB Desc",
+            "Sub Sector Desc",
+            "BC_NAME",
+            "Region",
+            "Risk CAT",
+            "Risk Cat CRD",
+            "Funded Non Funded",
+            "FRR",
+        ]
+    ]
 
+    masterbb5 = masterbb5.drop_duplicates(subset="GCIF")
+    masterborr = my_transformation.do_merge(masterbb4, masterbb5, "GCIF", "GCIF")
 
-#     """
-#     masterbb4 = masterbb3.groupby(["GCIF"], as_index=False)["Balance"].sum()
-#     masterbb5 = masterbb3[
-#         [
-#             "GCIF",
-#             "REPORT_DATE",
-#             "Customer_Class",
-#             "Cust_Type",
-#             "Org_Name",
-#             "MBB_Sub_Market_Segment_Desc",
-#             "MISC_Cd",
-#             "MISC_Desc",
-#             "NOB Sector",
-#             "BRR",
-#             "SPRTER_ADJ_RATG",
-#             "RISK_RATG_DT",
-#             "PL+GIL",
-#             "Broad Code",
-#             "Broad Sector",
-#             "NOB Code",
-#             "NOB Desc",
-#             "Sub Sector Desc",
-#             "BC_NAME",
-#             "Region",
-#             "Risk CAT",
-#             "Risk Cat CRD",
-#             "Funded Non Funded",
-#             "FRR",
-#         ]
-#     ]
+    masterborr = my_transformation.conditional_copy(
+        masterborr,
+        "Funded Non Funded",
+        "Funded Balance",
+        "Funded",
+        masterborr["Balance"],
+    ).fillna(0)
 
-#     masterbb5 = masterbb5.drop_duplicates(subset="GCIF")
-#     masterborr = my_transformation.do_merge(masterbb4, masterbb5, "GCIF", "GCIF")
+    masterborr = my_transformation.conditional_copy(
+        masterborr,
+        "Funded Non Funded",
+        "Non Funded Balance",
+        "Non Funded",
+        masterborr["Balance"],
+    ).fillna(0)
 
-#     masterborr = my_transformation.conditional_copy(
-#         masterborr,
-#         "Funded Non Funded",
-#         "Funded Balance",
-#         "Funded",
-#         masterborr["Balance"],
-#     ).fillna(0)
-
-#     masterborr = my_transformation.conditional_copy(
-#         masterborr,
-#         "Funded Non Funded",
-#         "Non Funded Balance",
-#         "Non Funded",
-#         masterborr["Balance"],
-#     ).fillna(0)
-
-#     final_frame = my_transformation.do_merge(masterborr, masterbbprep, "GCIF", "GCIF")
+    final_frame = my_transformation.do_merge(masterborr, masterbbprep, "GCIF", "GCIF")
 
 
 # # masterbb3.to_excel(path + r"\masterbbfaiz.xlsx", engine="openpyxl", index=False)
-# # masterbb2.to_excel(path + r"\masterbbfaiz.xlsx", engine="openpyxl", index=False)
-
-print(masterbb3.info())
+final_frame.to_excel(
+    path + r"\masterBB_borrower_level.xlsx", engine="openpyxl", index=False
+)
