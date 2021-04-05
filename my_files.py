@@ -8,6 +8,8 @@ class file:
         os.path.realpath(__file__)
     )  # "Z:\BB RISK\BB DATA\\2020\8. Aug 2020
 
+    my_path = os.path.dirname(os.path.realpath(__file__))
+
     master = pd.read_csv(
         dir_path + r"\bb.txt",
         delimiter="\t",

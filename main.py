@@ -2,6 +2,7 @@ from my_files import *
 from my_classes import *
 import datetime as dt
 
+my_path = file.my_path
 bullet = 1
 
 master_BC_GCIF = []
@@ -21,17 +22,16 @@ if __name__ == "__main__":
         )
         print(f"{bullet} . {files['filename']},{files['sheet']} is loaded")
         try:
-            dfs = my_validation.series(classname)
-            dfs = dfs[["Account_No", "BC_NAME", "REGION"]]
+            classframe = my_validation.series(classname)
+            dfs = classframe[["Account_No", "BC_NAME", "REGION"]]
             if x == "strc_bc" or x == "trade_f" or x == "trade_nf":
                 master_BC_GCIF.append(dfs)
             else:
                 master_BC_Acc.append(dfs)
-
-            # merged = my_validation.comparison(
-            #     classname, master, "Account_Num", "Account_No"
-            # )
-            # my_validation.odtl_check(merged, "Balance", "M_Bnm_Balance")
+            merged = my_validation.comparison(
+                classname, master, "Account_Num", "Account_No", x
+            )
+            my_validation.odtl_check(merged, "Balance", "M_Bnm_Balance", x)
 
         except Exception as e:
             print(
@@ -198,23 +198,23 @@ if __name__ == "__main__":
         masterbb3, "NPL_Indicator", "PL NPL", file.pl_npl
     ).replace("", "PL")
     masterbb3["FRR"] = masterbb3["FAC_RISK_RATG"].fillna("Unrated")
-    masterbb3.loc[:, "RM Mil"] = masterbb3["Balance"] / 1000000
+    masterbb3["RM Mil"] = masterbb3["Balance"] / 1000000
     masterbb3.to_excel(
-        path + r"\masterbb_account_level.xlsx", engine="openpyxl", index=False
+        my_path + r"\masterbb_account_level.xlsx", engine="openpyxl", index=False
     )
     masterbb3["Balance"] = masterbb3["Balance"].astype(float)
     idx = (
         masterbb3.groupby(["GCIF"])["Balance"].transform(max).astype(float)
         == masterbb3["Balance"]
     )
-    masterbb3.loc[idx, "BC Max"] = 1
-    masterbb3["BC Max"] = masterbb3["BC Max"].fillna(0)
-    # masterbb3.loc[masterbb3["BC Max"] == 1, "BC_Borr"] = masterbb3["BC_NAME"]
+    masterbb3 = my_transformation.conditional_copy2(masterbb3, idx, "BC Max", 1).fillna(
+        0
+    )
     masterbb3 = my_transformation.conditional_copy(
         masterbb3, "BC Max", "BC_Borr", 1, masterbb3["BC_NAME"]
     )
     masterbbprep = masterbb3.drop_duplicates(subset="GCIF")
-    #     # masterbbprep.loc[masterbbprep["BC Max"] == "y", "BC_Borr"] = masterbbprep["BC_NAME"]
+
     masterbbprep = my_transformation.conditional_copy(
         masterbbprep, "BC Max", "BC_Borr", 0, masterbbprep["BC_NAME"]
     )
@@ -275,7 +275,6 @@ if __name__ == "__main__":
     final_frame = my_transformation.do_merge(masterborr, masterbbprep, "GCIF", "GCIF")
 
 
-# # masterbb3.to_excel(path + r"\masterbbfaiz.xlsx", engine="openpyxl", index=False)
 final_frame.to_excel(
-    path + r"\masterBB_borrower_level.xlsx", engine="openpyxl", index=False
+    my_path + r"\masterBB_borrower_level.xlsx", engine="openpyxl", index=False
 )

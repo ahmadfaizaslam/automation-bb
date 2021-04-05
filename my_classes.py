@@ -3,7 +3,8 @@ from my_files import *
 import os
 import numpy as np
 
-path = os.path.dirname(os.path.realpath(__file__))
+path = file.dir_path
+my_path = file.my_path
 
 
 class my_validation:
@@ -22,29 +23,35 @@ class my_validation:
         )
         self.shape = self.dataframe.shape
 
-    def info(self):
-        df = self.dataframe.dtypes
-        print(df)
-
     def series(self):
         df = self.dataframe
         return df
 
-    def comparison(self, master, column_1, column_2):
-        print(f"        Dimension : {self.shape}")
-        df = master.merge(
-            self.dataframe, how="inner", left_on=column_1, right_on=column_2
-        )
-        return df
+    def strc_check():
+        pass
 
-    def odtl_check(self, column_1, column_2):
+    def comparison(self, master, column_1, column_2, filename):
+        print(f"        Dimension : {self.shape}")
+        try:
+            df = master.merge(
+                self.dataframe, how="inner", left_on=column_1, right_on=column_2
+            )
+            return df
+        except:
+            print(f"{filename} is unable to merge {column_2} on {column_1} from bb.txt")
+
+    def odtl_check(self, column_1, column_2, filename):
         if self[self[column_1] != self[column_2]].shape[0] == 0:
             print("        ODTL numbers are all matched.")
             return self
         else:
             print("        Not matched; Check Unmatched Balance ODTL excel file")
             print("        Balance and M_Bnm_Balance are not matched")
-            # self.to_excel(path+r"\\log_file.xlsx",engine='openpyxl',index=False)
+            self.to_excel(
+                my_path + r"\\log_file(balances_not_matches) for " + filename + ".xlsx",
+                engine="openpyxl",
+                index=False,
+            )
             print("        Error Has Been Saved in log_fil.xlsx")
             return self
 
@@ -73,7 +80,6 @@ class my_transformation:
         for condition, value in my_dictionary.items():
             df[new_column].mask(df[old_column] == condition, value, inplace=True)
 
-        # df.to_excel(path+r"\\test.xlsx",engine='openpyxl')
         # print(df.info())
         return df
 
@@ -132,4 +138,8 @@ class my_transformation:
 
     def conditional_copy(df, value_from, value_to, cond, effect):
         df.loc[df[value_from] == cond, value_to] = effect
+        return df
+
+    def conditional_copy2(df, other_column, column, value):
+        df.loc[other_column, column] = value
         return df
