@@ -2,6 +2,7 @@ from my_files import *
 from my_classes import *
 import datetime as dt
 
+pd.options.mode.chained_assignment = None
 my_path = file.my_path
 bullet = 1
 
@@ -12,8 +13,22 @@ master = file.master
 code_ref = file.code_ref
 
 
-if __name__ == "__main__":
+def createFolder(directory):
+    try:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+    except OSError:
+        print("Error: Creating directory. " + directory)
 
+
+createFolder("./logs/")
+
+strc_bb = master.loc[master["Facility_Level_2"] == "STRC"]
+strc_sum = strc_bb.groupby(["GCIF"], as_index=False)["Balance"].sum()
+
+if __name__ == "__main__":
+    mis_strc_sum = []
+    print("\nLoading MIS Files...\n")
     for classname, elements in file.validation.items():
         x = classname
         files, frame = file.validation[classname], classname
@@ -24,15 +39,27 @@ if __name__ == "__main__":
         try:
             classframe = my_validation.series(classname)
             dfs = classframe[["Account_No", "BC_NAME", "REGION"]]
-            if x == "strc_bc" or x == "trade_f" or x == "trade_nf":
+            if x == "trade_f" or x == "trade_nf":
+                merged = my_validation.comparison(
+                    classname, master, "Account_Num", "Account_No", x
+                )
+                my_validation.odtl_check(merged, "Balance", "M_Bnm_Balance", x)
+                master_BC_GCIF.append(dfs)
+            elif x == "strc_bc":
+                mis_strc_sum = classframe.groupby(["Account_No"], as_index=False)[
+                    "M_Bnm_Balance"
+                ].sum()
+                df3 = my_validation.strfc_comparison(
+                    mis_strc_sum, strc_sum, "GCIF", "Account_No", x
+                )
+                my_validation.odtl_check(df3, "Balance", "M_Bnm_Balance", x)
                 master_BC_GCIF.append(dfs)
             else:
+                merged = my_validation.comparison(
+                    classname, master, "Account_Num", "Account_No", x
+                )
+                my_validation.odtl_check(merged, "Balance", "M_Bnm_Balance", x)
                 master_BC_Acc.append(dfs)
-            merged = my_validation.comparison(
-                classname, master, "Account_Num", "Account_No", x
-            )
-            my_validation.odtl_check(merged, "Balance", "M_Bnm_Balance", x)
-
         except Exception as e:
             print(
                 f"        File {files['filename']} is not compatible \n        !! {e} is not found"
@@ -55,11 +82,10 @@ if __name__ == "__main__":
         .replace({"JOHOR BARU BC": "JOHOR BAHRU BC"})
         .replace({"SUBANG": "SUBANG BC"})
     )
-
     print(
-        "================================================================================================"
+        "================================================================================================\n"
     )
-
+    print(f"Loading Code and Reference Files...\n")
     for x, j in file.preparation.items():
         classname = x
         files = file.preparation[classname]
@@ -199,9 +225,13 @@ if __name__ == "__main__":
     ).replace("", "PL")
     masterbb3["FRR"] = masterbb3["FAC_RISK_RATG"].fillna("Unrated")
     masterbb3["RM Mil"] = masterbb3["Balance"] / 1000000
-    masterbb3.to_excel(
+    print("\nGenerating Account Level MasterBB\n")
+
+    masterbb_account_level = masterbb3
+    masterbb_account_level.to_excel(
         my_path + r"\masterbb_account_level.xlsx", engine="openpyxl", index=False
     )
+    print(f"Account Level MasterBB Generated")
     masterbb3["Balance"] = masterbb3["Balance"].astype(float)
     idx = (
         masterbb3.groupby(["GCIF"])["Balance"].transform(max).astype(float)
@@ -274,7 +304,9 @@ if __name__ == "__main__":
 
     final_frame = my_transformation.do_merge(masterborr, masterbbprep, "GCIF", "GCIF")
 
-
-final_frame.to_excel(
-    my_path + r"\masterBB_borrower_level.xlsx", engine="openpyxl", index=False
-)
+    print("Generating Borrower Level MasterBB\n")
+    final_frame.to_excel(
+        my_path + r"\masterBB_borrower_level.xlsx", engine="openpyxl", index=False
+    )
+    print(final_frame.info())
+    print("Borrower Level MasterBB Generated")

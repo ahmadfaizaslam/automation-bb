@@ -18,6 +18,7 @@ class my_validation:
             pd.read_excel(
                 self.file_path, sheet_name=sheet, dtype={merge_on: str, check_on: int}
             )
+            .dropna(subset=[check_on], how="any")
             .rename(columns={merge_on: "Account_No", check_on: "M_Bnm_Balance"})
             .fillna(0)
         )
@@ -26,9 +27,6 @@ class my_validation:
     def series(self):
         df = self.dataframe
         return df
-
-    def strc_check():
-        pass
 
     def comparison(self, master, column_1, column_2, filename):
         print(f"        Dimension : {self.shape}")
@@ -41,19 +39,31 @@ class my_validation:
             print(f"{filename} is unable to merge {column_2} on {column_1} from bb.txt")
 
     def odtl_check(self, column_1, column_2, filename):
-        if self[self[column_1] != self[column_2]].shape[0] == 0:
+        self[column_2] = self[column_2].astype(int)
+        if self[self[column_1] != self[column_2]].shape[0] in range(0, 5):
             print("        ODTL numbers are all matched.")
             return self
         else:
             print("        Not matched; Check Unmatched Balance ODTL excel file")
             print("        Balance and M_Bnm_Balance are not matched")
             self.to_excel(
-                my_path + r"\\log_file(balances_not_matches) for " + filename + ".xlsx",
+                my_path
+                + r"\logs\log_file(balances_not_matches) for ("
+                + filename
+                + ").xlsx",
                 engine="openpyxl",
                 index=False,
             )
-            print("        Error Has Been Saved in log_fil.xlsx")
+            print(f"        Error Has Been Saved in log_file({filename}).xlsx")
             return self
+
+    def strfc_comparison(self, master, column_1, column_2, filename):
+        print(f"        Dimension : {self.shape}")
+        try:
+            df = master.merge(self, how="inner", left_on=column_1, right_on=column_2)
+            return df
+        except:
+            print(f"{filename} is unable to merge {column_2} on {column_1} from bb.txt")
 
 
 class my_transformation:
