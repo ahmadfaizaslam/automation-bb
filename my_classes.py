@@ -1,6 +1,5 @@
 import pandas as pd
 from my_files import *
-import os
 import numpy as np
 
 path = file.dir_path
@@ -152,4 +151,8 @@ class my_transformation:
 
     def conditional_copy2(df, other_column, column, value):
         df.loc[other_column, column] = value
+        return df
+
+    def padding_zeroes(df, column, pad_value, value):
+        df[column] = df[column].str.rjust(pad_value, value)
         return df

@@ -228,10 +228,13 @@ if __name__ == "__main__":
     print("\nGenerating Account Level MasterBB\n")
 
     masterbb_account_level = masterbb3
+    masterbb_account_level["Account_Num"] = masterbb_account_level[
+        "Account_Num"
+    ].str.rjust(12, "0")
     masterbb_account_level.to_excel(
         my_path + r"\masterbb_account_level.xlsx", engine="openpyxl", index=False
     )
-    print(f"Account Level MasterBB Generated")
+    print(f"Account Level MasterBB Generated\n")
     masterbb3["Balance"] = masterbb3["Balance"].astype(float)
     idx = (
         masterbb3.groupby(["GCIF"])["Balance"].transform(max).astype(float)
@@ -305,8 +308,8 @@ if __name__ == "__main__":
     final_frame = my_transformation.do_merge(masterborr, masterbbprep, "GCIF", "GCIF")
 
     print("Generating Borrower Level MasterBB\n")
-    final_frame.to_excel(
-        my_path + r"\masterBB_borrower_level.xlsx", engine="openpyxl", index=False
-    )
-    print(final_frame.info())
+    # final_frame.to_excel(
+    #     my_path + r"\masterBB_borrower_level.xlsx", engine="openpyxl", index=False
+    # )
+    print(masterbb_account_level.info())
     print("Borrower Level MasterBB Generated")

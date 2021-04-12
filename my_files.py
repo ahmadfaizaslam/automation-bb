@@ -4,9 +4,7 @@ import numpy as np
 
 
 class file:
-    dir_path = os.path.dirname(
-        os.path.realpath(__file__)
-    )  # r"Z:\BB RISK\BB DATA\\2020\8. Aug 2020
+    dir_path = r"C:\Users\faiza\Desktop\files"  # r"Z:\BB RISK\BB DATA\\2020\8. Aug 2020
 
     my_path = os.path.dirname(
         os.path.realpath(__file__)
